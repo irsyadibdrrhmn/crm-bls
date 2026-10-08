@@ -70,35 +70,50 @@
             <table class="w-full text-left text-xs border border-slate-200">
                 <thead>
                     <tr class="bg-slate-100 text-slate-700 font-bold border-b border-slate-300 uppercase text-[10px]">
-                        <th class="p-2.5">No. Transaksi</th>
-                        <th class="p-2.5">No. PO</th>
-                        <th class="p-2.5">Tanggal</th>
-                        <th class="p-2.5">Pelanggan B2B</th>
-                        <th class="p-2.5">Komoditas & Kuantitas</th>
-                        <th class="p-2.5 text-right">Nominal (IDR)</th>
+                        <th class="p-2">No. TRX</th>
+                        <th class="p-2">No. PO</th>
+                        <th class="p-2">Tanggal</th>
+                        <th class="p-2">Pelanggan & NIK</th>
+                        <th class="p-2">Metode Bayar</th>
+                        <th class="p-2">Komoditas & Kuantitas</th>
+                        <th class="p-2 text-right">Nominal (IDR)</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-200">
                     @forelse ($transaksis as $t)
                         <tr>
-                            <td class="p-2.5 font-mono">TRX-{{ str_pad($t->id_transaksi, 5, '0', STR_PAD_LEFT) }}</td>
-                            <td class="p-2.5 font-mono">PO-{{ str_pad($t->id_pemesanan, 5, '0', STR_PAD_LEFT) }}</td>
-                            <td class="p-2.5">{{ $t->tanggal_transaksi ? $t->tanggal_transaksi->format('d/m/Y') : '-' }}</td>
-                            <td class="p-2.5 font-semibold text-slate-900">{{ $t->pemesanan?->nama_pelanggan }}</td>
-                            <td class="p-2.5 text-slate-600 text-[11px]">{{ $t->list_item }}</td>
-                            <td class="p-2.5 text-right font-bold text-slate-900">
+                            <td class="p-2 font-mono">TRX-{{ str_pad($t->id_transaksi, 5, '0', STR_PAD_LEFT) }}</td>
+                            <td class="p-2 font-mono">PO-{{ str_pad($t->id_pemesanan, 5, '0', STR_PAD_LEFT) }}</td>
+                            <td class="p-2">{{ $t->tanggal_transaksi ? $t->tanggal_transaksi->format('d/m/Y') : '-' }}</td>
+                            <td class="p-2">
+                                <div class="font-semibold text-slate-900">{{ $t->pemesanan?->nama_pelanggan }}</div>
+                                <div class="font-mono text-[9px] text-slate-500">NIK: {{ $t->pemesanan?->nik ?? '-' }}</div>
+                            </td>
+                            <td class="p-2 text-[10px]">
+                                @php
+                                    $metode = $t->metode_pembayaran ?? $t->pemesanan?->metode_pembayaran ?? 'transfer_bank';
+                                    $bank = $t->nama_bank ?? $t->pemesanan?->nama_bank;
+                                @endphp
+                                @if ($metode === 'cash')
+                                    <span class="font-bold text-amber-900">Tunai (Cash)</span>
+                                @else
+                                    <span class="font-bold text-sky-900">Transfer {{ $bank ? "($bank)" : '' }}</span>
+                                @endif
+                            </td>
+                            <td class="p-2 text-slate-600 text-[10px]">{{ $t->list_item }}</td>
+                            <td class="p-2 text-right font-bold text-slate-900">
                                 Rp {{ number_format($t->pemesanan?->total_harga ?? 0, 0, ',', '.') }}
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="p-4 text-center text-slate-400">Tidak ada data transaksi.</td>
+                            <td colspan="7" class="p-4 text-center text-slate-400">Tidak ada data transaksi.</td>
                         </tr>
                     @endforelse
                 </tbody>
                 <tfoot>
                     <tr class="border-t-2 border-slate-800 font-bold bg-slate-50">
-                        <td colspan="5" class="p-3 text-right uppercase text-slate-700">Total Akumulasi:</td>
+                        <td colspan="6" class="p-3 text-right uppercase text-slate-700">Total Akumulasi:</td>
                         <td class="p-3 text-right text-sm text-slate-900">Rp {{ number_format($totalPendapatan, 0, ',', '.') }}</td>
                     </tr>
                 </tfoot>

@@ -16,6 +16,8 @@ class Transaksi extends Model
         'id_pemesanan',
         'tanggal_transaksi',
         'list_item',
+        'metode_pembayaran',
+        'nama_bank',
         'id_user',
     ];
 

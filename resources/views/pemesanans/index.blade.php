@@ -97,7 +97,11 @@
                             </td>
                             <td>
                                 <div class="font-bold text-slate-900 text-sm">{{ $po->nama_pelanggan }}</div>
-                                <div class="text-[11px] text-slate-400 mt-0.5">{{ $po->no_telp ?? '-' }}</div>
+                                <div class="flex items-center gap-1.5 text-[11px] text-slate-500 mt-0.5">
+                                    <span class="font-mono text-teal-800">NIK: {{ $po->nik ?? '-' }}</span>
+                                    <span>&bull;</span>
+                                    <span>{{ $po->no_telp ?? '-' }}</span>
+                                </div>
                             </td>
                             <td class="text-xs text-slate-600 whitespace-nowrap">
                                 {{ $po->tgl_pesan ? $po->tgl_pesan->format('d/m/Y') : '-' }}
@@ -114,6 +118,13 @@
                                 <span class="font-extrabold text-slate-900 text-sm">
                                     Rp {{ number_format($po->total_harga, 0, ',', '.') }}
                                 </span>
+                                <div class="mt-0.5">
+                                    @if ($po->metode_pembayaran === 'cash')
+                                        <span class="inline-block px-1.5 py-0.2 rounded text-[10px] font-bold bg-amber-50 text-amber-800 border border-amber-200">Tunai (Cash)</span>
+                                    @else
+                                        <span class="inline-block px-1.5 py-0.2 rounded text-[10px] font-bold bg-sky-50 text-sky-800 border border-sky-200">Transfer {{ $po->nama_bank ?? 'Bank' }}</span>
+                                    @endif
+                                </div>
                             </td>
                             <td>
                                 @if ($po->status_pesan === 'pending')

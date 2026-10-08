@@ -50,9 +50,15 @@
             <!-- Billing & Shipping Details -->
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 py-6 border-b border-slate-200 text-xs">
                 <div>
-                    <span class="font-bold text-slate-400 uppercase tracking-wider block mb-1">Ditagihkan Kepada:</span>
+                    <span class="font-bold text-slate-400 uppercase tracking-wider block mb-1">Ditagihkan Kepada (Pembeli / Mitra):</span>
                     <div class="text-sm font-bold text-slate-900">{{ $transaksi->pemesanan?->nama_pelanggan }}</div>
-                    <div class="text-slate-600 mt-0.5">{{ $transaksi->pemesanan?->alamat_tujuan }}</div>
+                    <div class="mt-1 flex items-center gap-1.5 font-mono text-xs text-slate-800">
+                        <span class="text-slate-500 font-sans font-semibold">NIK Pembeli:</span>
+                        <span class="bg-slate-100 px-2 py-0.5 rounded border border-slate-200 font-bold text-slate-900">
+                            {{ $transaksi->pemesanan?->nik ? trim(chunk_split($transaksi->pemesanan->nik, 4, ' ')) : '-' }}
+                        </span>
+                    </div>
+                    <div class="text-slate-600 mt-1">{{ $transaksi->pemesanan?->alamat_tujuan }}</div>
                     <div class="text-slate-500 mt-0.5">Kontak PIC: {{ $transaksi->pemesanan?->no_telp ?? '-' }}</div>
                 </div>
 
@@ -61,6 +67,24 @@
                     <div class="font-bold text-slate-900">No. PO: PO-{{ str_pad($transaksi->id_pemesanan, 5, '0', STR_PAD_LEFT) }}</div>
                     <div class="text-slate-600 mt-0.5">Armada: {{ $transaksi->pemesanan?->pengiriman?->nama_kurir_armada ?? 'Armada Pendingin BLS' }}</div>
                     <div class="text-slate-500 mt-0.5">Status Pengiriman: <strong class="text-emerald-700 capitalize">{{ str_replace('_', ' ', $transaksi->pemesanan?->pengiriman?->status_kirim ?? 'Selesai') }}</strong></div>
+
+                    <!-- Metode Pembayaran Badge -->
+                    <div class="mt-2.5">
+                        <span class="font-bold text-slate-400 uppercase tracking-wider block mb-0.5 text-[10px]">Kanal Pembayaran:</span>
+                        @php
+                            $metode = $transaksi->metode_pembayaran ?? $transaksi->pemesanan?->metode_pembayaran ?? 'transfer_bank';
+                            $bank = $transaksi->nama_bank ?? $transaksi->pemesanan?->nama_bank ?? 'BCA';
+                        @endphp
+                        @if ($metode === 'cash')
+                            <span class="inline-block px-2.5 py-1 bg-amber-100 border border-amber-300 text-amber-900 font-black uppercase rounded text-[11px]">
+                                TUNAI / CASH (PELABUHAN)
+                            </span>
+                        @else
+                            <span class="inline-block px-2.5 py-1 bg-sky-100 border border-sky-300 text-sky-900 font-black uppercase rounded text-[11px]">
+                                TRANSFER BANK ({{ $bank }})
+                            </span>
+                        @endif
+                    </div>
                 </div>
             </div>
 
@@ -115,18 +139,59 @@
                 </table>
             </div>
 
+            <!-- Payment Instruction / Bank Details Section -->
+            @php
+                $metode = $transaksi->metode_pembayaran ?? $transaksi->pemesanan?->metode_pembayaran ?? 'transfer_bank';
+                $bank = $transaksi->nama_bank ?? $transaksi->pemesanan?->nama_bank ?? 'BCA';
+            @endphp
+            <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 text-xs mb-6">
+                @if ($metode === 'cash')
+                    <div class="flex items-start gap-3">
+                        <div class="p-2 rounded-lg bg-amber-100 text-amber-800 shrink-0">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                        </div>
+                        <div>
+                            <span class="font-bold text-slate-800 uppercase tracking-wider block">Pembayaran Tunai di Lokasi (Cash on Delivery / Timbang Dermaga)</span>
+                            <p class="text-slate-600 mt-0.5">
+                                Pembayaran diserahkan secara kontan saat serah terima fisik komoditas di cold storage pelabuhan setelah penimbangan tonase resmi.
+                            </p>
+                        </div>
+                    </div>
+                @else
+                    <div class="flex items-start gap-3">
+                        <div class="p-2 rounded-lg bg-sky-100 text-sky-800 shrink-0">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z"/></svg>
+                        </div>
+                        <div>
+                            <span class="font-bold text-slate-800 uppercase tracking-wider block">Instruksi Pembayaran Transfer Rekening Bank Resmi CV BLS</span>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-1.5 text-slate-700">
+                                <div>
+                                    <span class="text-slate-500 block text-[11px]">Bank Tujuan:</span>
+                                    <span class="font-bold text-slate-900">{{ $bank == 'Mandiri' ? 'Bank Mandiri' : ($bank == 'BRI' ? 'Bank BRI' : ($bank == 'BNI' ? 'Bank BNI' : 'Bank Central Asia (BCA)')) }}</span>
+                                </div>
+                                <div>
+                                    <span class="text-slate-500 block text-[11px]">Nomor Rekening & Atas Nama:</span>
+                                    <span class="font-mono font-bold text-slate-900">{{ $bank == 'Mandiri' ? '120-00-9831-291' : ($bank == 'BRI' ? '0341-01-002931-502' : ($bank == 'BNI' ? '0918-2831-22' : '8820-9182-33')) }}</span> &bull; <strong>CV Bakri Laut Sejahtera</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endif
+            </div>
+
             <!-- Signatures / Stamp Block -->
             <div class="grid grid-cols-2 gap-8 pt-8 mt-4 border-t border-slate-200 text-xs">
                 <div class="text-center">
                     <p class="text-slate-400 mb-14">Diterima oleh Pembeli / Mitra:</p>
-                    <div class="border-t border-slate-400 w-40 mx-auto pt-1 font-bold text-slate-800">
+                    <div class="border-t border-slate-400 w-48 mx-auto pt-1 font-bold text-slate-800">
                         {{ $transaksi->pemesanan?->nama_pelanggan }}
+                        <div class="text-[10px] text-slate-500 font-mono font-normal">NIK: {{ $transaksi->pemesanan?->nik ?? '-' }}</div>
                     </div>
                 </div>
 
                 <div class="text-center">
                     <p class="text-slate-400 mb-14">Petugas Admin Operasional:</p>
-                    <div class="border-t border-slate-400 w-40 mx-auto pt-1 font-bold text-slate-800">
+                    <div class="border-t border-slate-400 w-48 mx-auto pt-1 font-bold text-slate-800">
                         {{ $transaksi->user?->name ?? $transaksi->user?->username ?? 'Admin CV BLS' }}
                     </div>
                 </div>

@@ -74,10 +74,13 @@ class DatabaseSeeder extends Seeder
         $order1 = Pemesanan::create([
             'id_user' => $admin->id,
             'nama_pelanggan' => 'PT Mina Sejahtera Nusantara',
+            'nik' => '3172010203850001',
             'no_telp' => '081298765432',
             'alamat_tujuan' => 'Kawasan Industri Perikanan Muara Baru Kav. 12, Jakarta Utara',
             'tgl_pesan' => now()->subDays(5)->format('Y-m-d'),
             'total_harga' => 12750000,
+            'metode_pembayaran' => 'transfer_bank',
+            'nama_bank' => 'BCA',
             'status_pesan' => 'selesai',
             'catatan' => 'Kemasan boks styrofoam berinsulasi es batu curah. Siap kirim subuh.',
         ]);
@@ -94,6 +97,8 @@ class DatabaseSeeder extends Seeder
             'id_pemesanan' => $order1->id_pemesanan,
             'tanggal_transaksi' => now()->subDays(5)->setTime(8, 30),
             'list_item' => 'Tuna Yellowfin Grade A (150 Kg @ Rp 85.000)',
+            'metode_pembayaran' => 'transfer_bank',
+            'nama_bank' => 'BCA',
             'id_user' => $admin->id,
         ]);
 
@@ -110,10 +115,13 @@ class DatabaseSeeder extends Seeder
         $order2 = Pemesanan::create([
             'id_user' => $admin->id,
             'nama_pelanggan' => 'Restoran Seafood Teluk Rasa Mandiri',
+            'nik' => '3172021508820003',
             'no_telp' => '082133445566',
             'alamat_tujuan' => 'Jl. Boulevard Kelapa Gading No. 88, Jakarta Utara',
             'tgl_pesan' => now()->subDays(1)->format('Y-m-d'),
             'total_harga' => 9740000,
+            'metode_pembayaran' => 'cash',
+            'nama_bank' => null,
             'status_pesan' => 'dikirim',
             'catatan' => 'Kerapu wajib hidup dalam drum aerasi beroksigen aktif.',
         ]);
@@ -146,6 +154,8 @@ class DatabaseSeeder extends Seeder
             'id_pemesanan' => $order2->id_pemesanan,
             'tanggal_transaksi' => now()->subDays(1)->setTime(14, 0),
             'list_item' => 'Kerapu Cantik Hidup (40 Kg), Cumi-Cumi Bangka Tube (40 Kg), Udang Vaname Size 40 (20 Kg)',
+            'metode_pembayaran' => 'cash',
+            'nama_bank' => null,
             'id_user' => $admin->id,
         ]);
 
@@ -162,10 +172,13 @@ class DatabaseSeeder extends Seeder
         $order3 = Pemesanan::create([
             'id_user' => $admin->id,
             'nama_pelanggan' => 'Hotel Grand Bahari Resort & Spa',
+            'nik' => '3172052006790002',
             'no_telp' => '081399887711',
             'alamat_tujuan' => 'Jl. Pantai Indah Kapuk No. 1, Jakarta Utara',
             'tgl_pesan' => now()->format('Y-m-d'),
             'total_harga' => 12000000,
+            'metode_pembayaran' => 'transfer_bank',
+            'nama_bank' => 'Mandiri',
             'status_pesan' => 'diproses',
             'catatan' => 'Salmon fillet vacuum packed portion 200gr.',
         ]);
@@ -182,6 +195,8 @@ class DatabaseSeeder extends Seeder
             'id_pemesanan' => $order3->id_pemesanan,
             'tanggal_transaksi' => now()->setTime(10, 15),
             'list_item' => 'Salmon Fillet Premium (Import) (50 Kg @ Rp 240.000)',
+            'metode_pembayaran' => 'transfer_bank',
+            'nama_bank' => 'Mandiri',
             'id_user' => $admin->id,
         ]);
 
@@ -198,10 +213,13 @@ class DatabaseSeeder extends Seeder
         $order4 = Pemesanan::create([
             'id_user' => $admin->id,
             'nama_pelanggan' => 'Catering Berkah Nelayan Abadi',
+            'nik' => '3172041112900004',
             'no_telp' => '087766554433',
             'alamat_tujuan' => 'Jl. Danau Sunter Barat Blok A-3, Jakarta Utara',
             'tgl_pesan' => now()->format('Y-m-d'),
             'total_harga' => 6400000,
+            'metode_pembayaran' => 'cash',
+            'nama_bank' => null,
             'status_pesan' => 'pending',
             'catatan' => 'Order baru masuk, menunggu konfirmasi stok fisik cold room.',
         ]);
@@ -216,14 +234,14 @@ class DatabaseSeeder extends Seeder
 
         // 4. Historical Monthly Transactions for realistic 6-month Trend Analytics
         $historicalClients = [
-            ['name' => 'PT Samudera Bahari Sentosa', 'telp' => '081122334455', 'addr' => 'Kawasan Industri Pelabuhan Tanjung Priok Blok C-2, Jakarta'],
-            ['name' => 'Restoran Aroma Laut Senayan', 'telp' => '081234567890', 'addr' => 'Komplek Gelora Bung Karno Pintu 7, Jakarta Pusat'],
-            ['name' => 'CV Mina Makmur Sejahtera', 'telp' => '081345678901', 'addr' => 'Jl. Lodan Timur No. 15, Ancol, Jakarta Utara'],
-            ['name' => 'Supermarket Bahari Fresh BSD', 'telp' => '081456789012', 'addr' => 'BSD Grand Boulevard Kav. 8, Tangerang Selatan'],
-            ['name' => 'Hotel Grand Mercure Kemayoran', 'telp' => '081567890123', 'addr' => 'Jl. H. Benyamin Sueb Kav. B-6, Kemayoran, Jakarta Pusat'],
-            ['name' => 'Catering Selera Nusantara Prima', 'telp' => '081678901234', 'addr' => 'Jl. Danau Sunter Selatan Blok O No. 12, Jakarta Utara'],
-            ['name' => 'Pusat Kuliner Ikan Bakar Muara Karang', 'telp' => '081789012345', 'addr' => 'Jl. Pluit Karang Cantik No. 44, Muara Karang, Jakarta Utara'],
-            ['name' => 'PT Pasifik Boga Lestari', 'telp' => '081890123456', 'addr' => 'Kawasan Pergudangan Pluit Blok H No. 5, Jakarta Utara'],
+            ['name' => 'PT Samudera Bahari Sentosa', 'nik' => '3172011204850001', 'telp' => '081122334455', 'addr' => 'Kawasan Industri Pelabuhan Tanjung Priok Blok C-2, Jakarta'],
+            ['name' => 'Restoran Aroma Laut Senayan', 'nik' => '3171022409830002', 'telp' => '081234567890', 'addr' => 'Komplek Gelora Bung Karno Pintu 7, Jakarta Pusat'],
+            ['name' => 'CV Mina Makmur Sejahtera', 'nik' => '3172031506880003', 'telp' => '081345678901', 'addr' => 'Jl. Lodan Timur No. 15, Ancol, Jakarta Utara'],
+            ['name' => 'Supermarket Bahari Fresh BSD', 'nik' => '3674011802910004', 'telp' => '081456789012', 'addr' => 'BSD Grand Boulevard Kav. 8, Tangerang Selatan'],
+            ['name' => 'Hotel Grand Mercure Kemayoran', 'nik' => '3171052911800005', 'telp' => '081567890123', 'addr' => 'Jl. H. Benyamin Sueb Kav. B-6, Kemayoran, Jakarta Pusat'],
+            ['name' => 'Catering Selera Nusantara Prima', 'nik' => '3172040807860006', 'telp' => '081678901234', 'addr' => 'Jl. Danau Sunter Selatan Blok O No. 12, Jakarta Utara'],
+            ['name' => 'Pusat Kuliner Ikan Bakar Muara Karang', 'nik' => '3172061210840007', 'telp' => '081789012345', 'addr' => 'Jl. Pluit Karang Cantik No. 44, Muara Karang, Jakarta Utara'],
+            ['name' => 'PT Pasifik Boga Lestari', 'nik' => '3172010101820008', 'telp' => '081890123456', 'addr' => 'Kawasan Pergudangan Pluit Blok H No. 5, Jakarta Utara'],
         ];
 
         $pastMonthsData = [
@@ -259,8 +277,10 @@ class DatabaseSeeder extends Seeder
             ],
         ];
 
+        $orderCounter = 0;
         foreach ($pastMonthsData as $monthsAgo => $ordersList) {
             foreach ($ordersList as $ordData) {
+                $orderCounter++;
                 $client = $historicalClients[$ordData['client']];
                 $orderDate = now()->subMonths($monthsAgo)->setDay($ordData['day'])->setTime(9, 0);
 
@@ -284,13 +304,19 @@ class DatabaseSeeder extends Seeder
                     $descItems[] = "{$ikanObj->nama_ikan} ({$qty} Kg)";
                 }
 
+                $metodeBayar = ($orderCounter % 3 === 0) ? 'cash' : 'transfer_bank';
+                $namaBank = $metodeBayar === 'transfer_bank' ? ($orderCounter % 2 === 0 ? 'BCA' : 'Mandiri') : null;
+
                 $pastOrder = Pemesanan::create([
                     'id_user' => $admin->id,
                     'nama_pelanggan' => $client['name'],
+                    'nik' => $client['nik'],
                     'no_telp' => $client['telp'],
                     'alamat_tujuan' => $client['addr'],
                     'tgl_pesan' => $orderDate->format('Y-m-d'),
                     'total_harga' => $totalHarga,
+                    'metode_pembayaran' => $metodeBayar,
+                    'nama_bank' => $namaBank,
                     'status_pesan' => 'selesai',
                     'catatan' => 'Pesanan rutin B2B telah diproses dan terkirim dengan standar cold chain.',
                     'created_at' => $orderDate,
@@ -313,6 +339,8 @@ class DatabaseSeeder extends Seeder
                     'id_pemesanan' => $pastOrder->id_pemesanan,
                     'tanggal_transaksi' => $orderDate->copy()->addHours(1),
                     'list_item' => implode(', ', $descItems),
+                    'metode_pembayaran' => $metodeBayar,
+                    'nama_bank' => $namaBank,
                     'id_user' => $admin->id,
                     'created_at' => $orderDate,
                     'updated_at' => $orderDate,
@@ -331,5 +359,4 @@ class DatabaseSeeder extends Seeder
             }
         }
     }
-
 }

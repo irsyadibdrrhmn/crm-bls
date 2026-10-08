@@ -95,7 +95,8 @@
                         <th class="w-24">No. Transaksi</th>
                         <th>No. PO</th>
                         <th>Tanggal</th>
-                        <th>Mitra Pelanggan B2B</th>
+                        <th>Pelanggan & NIK</th>
+                        <th>Metode Bayar</th>
                         <th>Daftar Komoditas (List Item)</th>
                         <th>Status Order</th>
                         <th>Petugas Admin</th>
@@ -113,11 +114,27 @@
                                     PO-{{ str_pad($t->id_pemesanan, 5, '0', STR_PAD_LEFT) }}
                                 </a>
                             </td>
-                            <td class="text-xs text-slate-600">
+                            <td class="text-xs text-slate-600 whitespace-nowrap">
                                 {{ $t->tanggal_transaksi ? $t->tanggal_transaksi->format('d/m/Y H:i') : '-' }}
                             </td>
                             <td>
                                 <div class="font-bold text-slate-900 text-xs">{{ $t->pemesanan?->nama_pelanggan }}</div>
+                                <div class="font-mono text-[10px] text-teal-800 mt-0.5">NIK: {{ $t->pemesanan?->nik ?? '-' }}</div>
+                            </td>
+                            <td>
+                                @php
+                                    $metode = $t->metode_pembayaran ?? $t->pemesanan?->metode_pembayaran ?? 'transfer_bank';
+                                    $bank = $t->nama_bank ?? $t->pemesanan?->nama_bank;
+                                @endphp
+                                @if ($metode === 'cash')
+                                    <span class="inline-block px-1.5 py-0.5 rounded text-[10px] font-bold bg-amber-50 text-amber-800 border border-amber-200 whitespace-nowrap">
+                                        Tunai (Cash)
+                                    </span>
+                                @else
+                                    <span class="inline-block px-1.5 py-0.5 rounded text-[10px] font-bold bg-sky-50 text-sky-800 border border-sky-200 whitespace-nowrap">
+                                        Transfer {{ $bank ? "($bank)" : '' }}
+                                    </span>
+                                @endif
                             </td>
                             <td class="text-xs text-slate-600 max-w-xs truncate" title="{{ $t->list_item }}">
                                 {{ $t->list_item }}
@@ -136,7 +153,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="8" class="text-center py-8 text-slate-400 text-xs">
+                            <td colspan="9" class="text-center py-8 text-slate-400 text-xs">
                                 Tidak ada transaksi penjualan pada rentang tanggal yang dipilih.
                             </td>
                         </tr>
@@ -145,7 +162,7 @@
                 @if ($transaksis->count() > 0)
                     <tfoot>
                         <tr class="bg-slate-50 font-bold border-t-2 border-slate-300">
-                            <td colspan="7" class="px-4 py-3 text-right text-xs uppercase tracking-wider text-slate-700">
+                            <td colspan="8" class="px-4 py-3 text-right text-xs uppercase tracking-wider text-slate-700">
                                 Total Akumulasi Periode:
                             </td>
                             <td class="px-4 py-3 text-right text-sm text-slate-900">

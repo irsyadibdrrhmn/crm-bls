@@ -86,6 +86,24 @@
                     </div>
 
                     <div>
+                        <label for="nik" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5 flex items-center justify-between">
+                            <span>NIK Penanggung Jawab / Pembeli <span class="text-rose-500">*</span></span>
+                            <span class="text-[10px] text-teal-700 font-semibold lowercase">(wajib 16 digit untuk faktur)</span>
+                        </label>
+                        <input type="text"
+                               id="nik"
+                               name="nik"
+                               value="{{ old('nik') }}"
+                               placeholder="contoh: 3172012304890001"
+                               maxlength="16"
+                               minlength="16"
+                               pattern="[0-9]{16}"
+                               title="Harus tepat 16 digit angka"
+                               required
+                               class="input-field font-mono">
+                    </div>
+
+                    <div>
                         <label for="no_telp" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
                             Kontak PIC / No. WhatsApp
                         </label>
@@ -132,6 +150,67 @@
                                   placeholder="Alamat lengkap penerima / gudang tujuan pengiriman..."
                                   class="input-field">{{ old('alamat_tujuan') }}</textarea>
                     </div>
+                </div>
+            </div>
+
+            <!-- Payment Method Card -->
+            <div class="card p-6" x-data="{ metodeBayar: '{{ old('metode_pembayaran', 'transfer_bank') }}' }">
+                <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-4 pb-2 border-b border-slate-100 flex items-center gap-2">
+                    <svg class="w-4 h-4 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+                    <span>Ketentuan & Metode Pembayaran B2B</span>
+                </h3>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <label :class="metodeBayar === 'transfer_bank' ? 'border-teal-600 bg-teal-50/50 ring-2 ring-teal-500/20' : 'border-slate-200 bg-white hover:border-slate-300'"
+                           class="relative flex cursor-pointer rounded-xl border p-4 shadow-xs transition-all">
+                        <input type="radio" name="metode_pembayaran" value="transfer_bank" x-model="metodeBayar" class="sr-only">
+                        <span class="flex flex-1">
+                            <span class="flex flex-col">
+                                <span class="flex items-center gap-2 text-xs font-bold text-slate-900 uppercase">
+                                    <svg class="w-4 h-4 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z"/></svg>
+                                    Transfer Bank (Rekening Resmi BLS)
+                                </span>
+                                <span class="mt-1 text-[11px] text-slate-500">
+                                    Pembayaran melalui transfer rekening bank perusahaan (BCA / Mandiri). Bukti transfer tertera pada faktur resmi.
+                                </span>
+                            </span>
+                        </span>
+                        <svg :class="metodeBayar === 'transfer_bank' ? 'text-teal-600' : 'invisible'" class="h-5 w-5 shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd" />
+                        </svg>
+                    </label>
+
+                    <label :class="metodeBayar === 'cash' ? 'border-amber-600 bg-amber-50/50 ring-2 ring-amber-500/20' : 'border-slate-200 bg-white hover:border-slate-300'"
+                           class="relative flex cursor-pointer rounded-xl border p-4 shadow-xs transition-all">
+                        <input type="radio" name="metode_pembayaran" value="cash" x-model="metodeBayar" class="sr-only">
+                        <span class="flex flex-1">
+                            <span class="flex flex-col">
+                                <span class="flex items-center gap-2 text-xs font-bold text-slate-900 uppercase">
+                                    <svg class="w-4 h-4 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                                    Tunai / Cash (Pelabuhan / Timbang Muat)
+                                </span>
+                                <span class="mt-1 text-[11px] text-slate-500">
+                                    Pembayaran tunai langsung di kasir dermaga / cold storage saat komoditas ditimbang dan dimuat.
+                                </span>
+                            </span>
+                        </span>
+                        <svg :class="metodeBayar === 'cash' ? 'text-amber-600' : 'invisible'" class="h-5 w-5 shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd" />
+                        </svg>
+                    </label>
+                </div>
+
+                <!-- Pilihan Bank Tujuan jika Transfer Bank -->
+                <div x-show="metodeBayar === 'transfer_bank'" x-transition class="mt-4 pt-4 border-t border-slate-100">
+                    <label for="nama_bank" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                        Rekening Bank Tujuan CV BLS
+                    </label>
+                    <select id="nama_bank" name="nama_bank" class="input-field text-xs">
+                        <option value="BCA" {{ old('nama_bank') == 'BCA' ? 'selected' : '' }}>Bank Central Asia (BCA) - 8820-9182-33 a/n CV Bakri Laut Sejahtera</option>
+                        <option value="Mandiri" {{ old('nama_bank') == 'Mandiri' ? 'selected' : '' }}>Bank Mandiri - 120-00-9831-291 a/n CV Bakri Laut Sejahtera</option>
+                        <option value="BRI" {{ old('nama_bank') == 'BRI' ? 'selected' : '' }}>Bank Rakyat Indonesia (BRI) - 0341-01-002931-502 a/n CV Bakri Laut Sejahtera</option>
+                        <option value="BNI" {{ old('nama_bank') == 'BNI' ? 'selected' : '' }}>Bank Negara Indonesia (BNI) - 0918-2831-22 a/n CV Bakri Laut Sejahtera</option>
+                    </select>
                 </div>
             </div>
 

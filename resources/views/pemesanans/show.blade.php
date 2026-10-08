@@ -84,6 +84,26 @@
                         <span class="font-bold text-slate-900 text-sm">{{ $pemesanan->nama_pelanggan }}</span>
                     </div>
                     <div>
+                        <span class="text-slate-400 block">NIK Pembeli (Faktur Resmi):</span>
+                        <span class="font-mono font-bold text-teal-900 text-xs bg-teal-50 px-2 py-0.5 rounded border border-teal-200 inline-block">
+                            {{ $pemesanan->nik ? trim(chunk_split($pemesanan->nik, 4, ' ')) : '-' }}
+                        </span>
+                    </div>
+                    <div>
+                        <span class="text-slate-400 block">Metode Pembayaran:</span>
+                        @if ($pemesanan->metode_pembayaran === 'cash')
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-bold bg-amber-100 text-amber-900 border border-amber-200">
+                                <svg class="w-3.5 h-3.5 text-amber-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                                <span>Tunai / Cash (Pelabuhan)</span>
+                            </span>
+                        @else
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-bold bg-sky-100 text-sky-900 border border-sky-200">
+                                <svg class="w-3.5 h-3.5 text-sky-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z"/></svg>
+                                <span>Transfer Bank {{ $pemesanan->nama_bank ? '('.$pemesanan->nama_bank.')' : '' }}</span>
+                            </span>
+                        @endif
+                    </div>
+                    <div>
                         <span class="text-slate-400 block">Kontak PIC / WhatsApp:</span>
                         <span class="font-medium text-slate-800">{{ $pemesanan->no_telp ?? '-' }}</span>
                     </div>

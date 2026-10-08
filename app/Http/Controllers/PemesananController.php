@@ -28,6 +28,7 @@ class PemesananController extends Controller
         if ($search) {
             $query->where(function ($q) use ($search) {
                 $q->where('nama_pelanggan', 'like', "%{$search}%")
+                  ->orWhere('nik', 'like', "%{$search}%")
                   ->orWhere('id_pemesanan', 'like', "%{$search}%")
                   ->orWhere('no_telp', 'like', "%{$search}%");
             });
@@ -56,23 +57,33 @@ class PemesananController extends Controller
     {
         $validated = $request->validate([
             'nama_pelanggan' => 'required|string|max:255',
+            'nik' => 'required|digits:16',
             'no_telp' => 'nullable|string|max:50',
             'alamat_tujuan' => 'required|string',
             'tgl_pesan' => 'required|date',
+            'metode_pembayaran' => 'required|in:cash,transfer_bank',
+            'nama_bank' => 'nullable|string|max:50',
             'catatan' => 'nullable|string',
             'items' => 'required|array|min:1',
             'items.*.id_ikan' => 'required|exists:ikans,id_ikan',
             'items.*.jumlah' => 'required|numeric|min:0.5',
+        ], [
+            'nik.required' => 'Identitas NIK 16 digit wajib diisi untuk keperluan penerbitan faktur resmi.',
+            'nik.digits' => 'Format NIK harus tepat 16 digit angka.',
+            'metode_pembayaran.required' => 'Pilih metode pembayaran (Cash atau Transfer Bank).',
         ]);
 
         DB::transaction(function () use ($validated) {
             $pemesanan = Pemesanan::create([
                 'id_user' => auth()->id(),
                 'nama_pelanggan' => $validated['nama_pelanggan'],
-                'no_telp' => $validated['no_telp'],
+                'nik' => $validated['nik'],
+                'no_telp' => $validated['no_telp'] ?? null,
                 'alamat_tujuan' => $validated['alamat_tujuan'],
                 'tgl_pesan' => $validated['tgl_pesan'],
                 'total_harga' => 0,
+                'metode_pembayaran' => $validated['metode_pembayaran'],
+                'nama_bank' => $validated['metode_pembayaran'] === 'transfer_bank' ? ($validated['nama_bank'] ?? 'BCA') : null,
                 'status_pesan' => 'pending',
                 'catatan' => $validated['catatan'] ?? null,
             ]);
@@ -141,12 +152,14 @@ class PemesananController extends Controller
             // Update status pesanan
             $pemesanan->update(['status_pesan' => 'diproses']);
 
-            // Catat Transaksi
+            // Catat Transaksi dengan metode pembayaran dari pesanan
             Transaksi::firstOrCreate(
                 ['id_pemesanan' => $pemesanan->id_pemesanan],
                 [
                     'tanggal_transaksi' => Carbon::now(),
                     'list_item' => implode(', ', $listItems),
+                    'metode_pembayaran' => $pemesanan->metode_pembayaran ?? 'transfer_bank',
+                    'nama_bank' => $pemesanan->nama_bank,
                     'id_user' => auth()->id(),
                 ]
             );

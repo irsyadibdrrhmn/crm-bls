@@ -15,10 +15,13 @@ class Pemesanan extends Model
     protected $fillable = [
         'id_user',
         'nama_pelanggan',
+        'nik',
         'no_telp',
         'alamat_tujuan',
         'tgl_pesan',
         'total_harga',
+        'metode_pembayaran',
+        'nama_bank',
         'status_pesan',
         'catatan',
     ];

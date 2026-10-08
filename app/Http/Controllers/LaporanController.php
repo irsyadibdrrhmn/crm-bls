@@ -75,6 +75,8 @@ class LaporanController extends Controller
                 'No PO / Pesanan',
                 'Tanggal Transaksi',
                 'Nama Pelanggan B2B',
+                'NIK Pelanggan',
+                'Metode Pembayaran',
                 'Rincian Komoditas (List Item)',
                 'Total Nominal (IDR)',
                 'Status Pesanan',
@@ -82,11 +84,17 @@ class LaporanController extends Controller
             ]);
 
             foreach ($transaksis as $t) {
+                $metode = ($t->metode_pembayaran ?? $t->pemesanan?->metode_pembayaran) === 'cash' 
+                    ? 'Tunai (Cash)' 
+                    : 'Transfer Bank' . ($t->nama_bank ?? $t->pemesanan?->nama_bank ? ' (' . ($t->nama_bank ?? $t->pemesanan?->nama_bank) . ')' : '');
+
                 fputcsv($handle, [
                     'TRX-' . str_pad($t->id_transaksi, 5, '0', STR_PAD_LEFT),
                     'PO-' . str_pad($t->id_pemesanan, 5, '0', STR_PAD_LEFT),
                     $t->tanggal_transaksi ? $t->tanggal_transaksi->format('d/m/Y H:i') : '-',
                     $t->pemesanan ? $t->pemesanan->nama_pelanggan : '-',
+                    $t->pemesanan ? ($t->pemesanan->nik ?? '-') : '-',
+                    $metode,
                     $t->list_item,
                     $t->pemesanan ? (float) $t->pemesanan->total_harga : 0,
                     $t->pemesanan ? ucfirst($t->pemesanan->status_pesan) : '-',
