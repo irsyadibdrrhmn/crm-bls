@@ -81,7 +81,7 @@ class LaporanController extends Controller
                 'Total Nominal (IDR)',
                 'Status Pesanan',
                 'Petugas Admin Operasional',
-            ]);
+            ], ';', '"', '\\');
 
             foreach ($transaksis as $t) {
                 $metode = ($t->metode_pembayaran ?? $t->pemesanan?->metode_pembayaran) === 'cash' 
@@ -99,7 +99,7 @@ class LaporanController extends Controller
                     $t->pemesanan ? (float) $t->pemesanan->total_harga : 0,
                     $t->pemesanan ? ucfirst($t->pemesanan->status_pesan) : '-',
                     $t->user ? $t->user->name ?? $t->user->username : 'Admin BLS',
-                ]);
+                ], ';', '"', '\\');
             }
 
             fclose($handle);
@@ -137,4 +137,3 @@ class LaporanController extends Controller
         ));
     }
 }
-

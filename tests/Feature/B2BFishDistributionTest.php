@@ -77,6 +77,21 @@ class B2BFishDistributionTest extends TestCase
         $responseOwner->assertSee('Executive Oversight');
     }
 
+    public function test_sales_report_csv_uses_excel_compatible_column_separator(): void
+    {
+        $response = $this->actingAs($this->owner)->get('/laporan/export/csv');
+
+        $response->assertOk();
+
+        $csv = $response->streamedContent();
+        $headerRow = preg_split('/\r\n|\n|\r/', substr($csv, 3))[0];
+        $columns = str_getcsv($headerRow, ';', '"', '\\');
+
+        $this->assertCount(10, $columns);
+        $this->assertSame('ID Transaksi', $columns[0]);
+        $this->assertSame('Petugas Admin Operasional', $columns[9]);
+    }
+
     public function test_admin_can_create_fish_master_data_with_initial_stock(): void
     {
         $response = $this->actingAs($this->admin)->post('/ikans', [
@@ -305,4 +320,3 @@ class B2BFishDistributionTest extends TestCase
         $response->assertHeader('Content-Type', 'text/csv; charset=UTF-8');
     }
 }
-
